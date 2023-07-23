@@ -1,0 +1,52 @@
+-- Bước 1: Chọn Database `classicmodels` để thao tác với cơ sở dữ liệu này 
+-- (nếu chưa có Database xem lại bài TH1) :
+USE `classicmodels`;
+
+-- Tạo PROCEDURE dùng tham số loại IN
+
+DELIMITER //
+CREATE PROCEDURE getCusById
+(IN cusNum INT(11))
+BEGIN
+  SELECT * FROM customers WHERE customerNumber = cusNum;
+END //
+DELIMITER ;
+
+-- Gọi store procedure:
+call getCusById(175);
+
+-- Tạo PROCEDURE dùng tham số loại IN
+DELIMITER //
+CREATE PROCEDURE GetCustomersCountByCity(
+    IN in_city VARCHAR(50),
+    OUT total INT)
+BEGIN
+    SELECT COUNT(customerNumber)
+    INTO total
+    FROM customers
+    WHERE city = in_city;
+END //
+DELIMITER ;
+
+-- Gọi store procedure:
+CALL GetCustomersCountByCity('Lyon',@total);
+SELECT @total;
+
+-- Tạo PROCEDURE dùng tham số loại INOUT
+-- INOUT là sự kết hợp giữa IN và OUT
+
+DELIMITER //
+CREATE PROCEDURE SetCounter(
+    INOUT counter INT,
+    IN inc INT
+)
+BEGIN
+    SET counter = counter + inc;
+END//
+DELIMITER ;
+
+SET @counter = 1;
+CALL SetCounter(@counter,1); -- 2
+CALL SetCounter(@counter,1); -- 3
+CALL SetCounter(@counter,5); -- 8
+SELECT @counter; -- 8
